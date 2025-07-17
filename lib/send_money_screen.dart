@@ -74,7 +74,7 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                   onPressed: () {
-                    debugPrint('ASDASDASDASD ${_amountController.text}');
+                    _submitAmount();
                   },
                   child: const Text('Submit', style: TextStyle(fontSize: 18)),
                 ),
@@ -84,5 +84,14 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
         ],
       ),
     );
+  }
+
+  void _submitAmount() {
+    final amount = double.tryParse(_amountController.text);
+    if (amount != null && amount > 0) {
+      debugPrint('ASDASDASDASD $amount');
+    } else {
+      debugPrint('ASDASDASDASD $amount');
+    }
   }
 }
