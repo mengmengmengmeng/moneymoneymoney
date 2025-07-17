@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moneymoneymoney/send_money_screen.dart';
+import 'package:moneymoneymoney/transaction_history_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -101,6 +102,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     onPressed: () {
                       debugPrint('ASDASDASDASD View transactions');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const TransactionHistoryScreen(),
+                        ),
+                      );
                     },
                     child: const Text(
                       'View Transactions',
