@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moneymoneymoney/send_money_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -79,6 +80,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     onPressed: () {
                       debugPrint('ASDASDASDASD Send money');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SendMoneyScreen(),
+                        ),
+                      );
                     },
                     child: const Text(
                       'Send Money',
@@ -89,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(width: 16.0),
                 Expanded(
                   child: ElevatedButton(
-                    style: OutlinedButton.styleFrom(
+                    style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     onPressed: () {
