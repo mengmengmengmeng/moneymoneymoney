@@ -89,9 +89,50 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
   void _submitAmount() {
     final amount = double.tryParse(_amountController.text);
     if (amount != null && amount > 0) {
-      debugPrint('ASDASDASDASD $amount');
+      _showResultBottomSheet(true);
     } else {
-      debugPrint('ASDASDASDASD $amount');
+      _showResultBottomSheet(false);
     }
+  }
+
+  void _showResultBottomSheet(bool isSuccess) {
+    showModalBottomSheet(
+      context: context,
+      constraints: BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width - 30,
+      ),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                isSuccess
+                    ? 'Your transaction was successful'
+                    : 'An error occurred. Please try again.',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  if (isSuccess) {
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: const Text('Submit', style: TextStyle(fontSize: 18)),
+              ),
+              SizedBox(height: 16.0),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
