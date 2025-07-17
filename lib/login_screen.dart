@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moneymoneymoney/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -28,7 +29,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -47,12 +47,15 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 32.0),
             ElevatedButton(
               onPressed: () {
-                debugPrint('');
                 debugPrint(
                   'ASDASDASDASD Username: ${_usernameController.text}',
                 );
                 debugPrint(
                   'ASDASDASDASD Password: ${_passwordController.text}',
+                );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
                 );
               },
               child: const Text('Login'),
