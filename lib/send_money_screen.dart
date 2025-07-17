@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class SendMoneyScreen extends StatefulWidget {
   const SendMoneyScreen({super.key});
@@ -53,7 +54,15 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
                           keyboardType: const TextInputType.numberWithOptions(
                             decimal: true,
                           ),
-                          decoration: const InputDecoration(prefixText: '₱ '),
+                          decoration: const InputDecoration(
+                            prefixText: '₱ ',
+                            hintText: '0.00',
+                          ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                              RegExp(r'^\d+\.?\d{0,2}'),
+                            ),
+                          ],
                         ),
                       ],
                     ),
