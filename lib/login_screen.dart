@@ -32,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextField(
@@ -46,6 +47,9 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 32.0),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
               onPressed: () {
                 debugPrint(
                   'ASDASDASDASD Username: ${_usernameController.text}',
@@ -58,7 +62,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   MaterialPageRoute(builder: (context) => const HomeScreen()),
                 );
               },
-              child: const Text('Login'),
+              child: const Text(
+                'Login',
+                style: TextStyle(fontSize: 18),
+              ),
             ),
           ],
         ),
