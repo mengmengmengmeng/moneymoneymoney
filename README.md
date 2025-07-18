@@ -1,16 +1,87 @@
 # moneymoneymoney
 
-A new Flutter project.
+## FVM (Flutter Version Manager)
+
+**Installation**
+
+Install.
+
+```
+brew tap leoafarias/fvm
+brew install fvm
+```
+
+Activate FVM globally.
+
+```
+dart pub global activate fvm
+```
+
+**Configuration**
+
+Install Flutter version.
+
+```
+fvm install 3.32.7
+```
+
+Check installed Flutter versions.
+
+```
+fvm list
+```
+
+Configure project to use specific version.
+
+```
+fvm use 3.32.7
+```
+
+**Android Studio**
+
+Go to `Preferences` > `Languages & Frameworks` > `Flutter`
+and update the Flutter SDK Path to use FVM path.
+
+```
+USER/PATH_TO_FVM/.fvm/flutter_sdk
+```
+
+**Reminder**
+
+While using FVM, add `fvm` before any Flutter command.
+
+For example, instead of `flutter pub get`
+
+```
+fvm flutter pub get
+```
+
+**Refer to these link for more information**
+
+- [Official Documentation](https://fvm.app/docs/getting_started/overview)
+
+- [Medium Article by by Sanjib Maharjan](https://cshanjib.medium.com/setting-up-fvm-flutter-version-management-properly-ab45ade0dd55)
+
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+**Install packages**
 
-A few resources to get you started if this is your first Flutter project:
+```
+fvm flutter pub get
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+**Run the generator**
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+fvm dart run build_runner build --delete-conflicting-outputs
+```
+
+## Inside the App
+**Use this credentials in the app**
+```
+testuser
+123456
+```
+### Link to mock data source
+https://github.com/mengmengmengmeng/monay/blob/main/db.json

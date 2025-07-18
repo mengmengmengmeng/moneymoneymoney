@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:moneymoneymoney/domain/entities/user.dart';
+import 'package:moneymoneymoney/ui/pages/send_money/send_money_screen.dart';
+import 'package:moneymoneymoney/ui/pages/transaction_history/transaction_history_screen.dart';
 
 import '../login/login_screen.dart';
-import '../send_money/send_money_screen.dart';
-import '../transaction_history/transaction_history_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final User user;
@@ -15,7 +16,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late User _currentUser;
   bool _isBalanceVisible = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentUser = widget.user;
+  }
 
   void _toggleBalanceVisibility() {
     setState(() {
@@ -54,8 +62,31 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildFeatureButton(
+    BuildContext context, {
+    required String label,
+    required Function onTap,
+  }) {
+    return Expanded(
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+        ),
+        onPressed: () {
+          onTap();
+        },
+        child: Text(label, style: const TextStyle(fontSize: 18)),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final currencyFormatter = NumberFormat.currency(
+      locale: 'en_PH',
+      symbol: '₱',
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Money Money Money'),
@@ -94,8 +125,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Text(
                           _isBalanceVisible
-                              ? '₱ ${widget.user.remainingBalance.toStringAsFixed(2)}'
-                              : '********',
+                              ? currencyFormatter.format(
+                                  _currentUser.remainingBalance,
+                                )
+                              : '₱******',
                           style: const TextStyle(
                             fontSize: 36,
                             fontWeight: FontWeight.bold,
@@ -117,50 +150,39 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 16.0),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    onPressed: () {
-                      debugPrint('ASDASDASDASD Send money');
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SendMoneyScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'Send Money',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ),
+                _buildFeatureButton(
+                  context,
+                  label: 'Send Money',
+                  onTap: () async {
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            SendMoneyScreen(user: _currentUser),
+                      ),
+                    );
+
+                    if (result != null && result is User) {
+                      setState(() {
+                        _currentUser = result;
+                      });
+                    }
+                  },
                 ),
-                const SizedBox(width: 16.0),
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    onPressed: () {
-                      debugPrint('ASDASDASDASD View transactions');
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              const TransactionHistoryScreen(),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'View Transactions',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ),
+                const SizedBox(width: 16),
+                _buildFeatureButton(
+                  context,
+                  label: 'History',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TransactionHistoryScreen(),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

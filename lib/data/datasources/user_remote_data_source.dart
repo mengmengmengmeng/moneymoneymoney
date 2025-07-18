@@ -14,15 +14,14 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
   UserRemoteDataSourceImpl({required this.client});
 
+  final _baseUrl =
+      'https://my-json-server.typicode.com/mengmengmengmeng/monay/user';
+
   @override
   Future<UserModel> login(String username, String password) async {
     // Yep, this is a mock API, not a real one. GET /user and then compare from
-    // mobile login credentials :D
-    final response = await client.get(
-      Uri.parse(
-        'https://my-json-server.typicode.com/mengmengmengmeng/monay/user',
-      ),
-    );
+    // mobile login credentials :)
+    final response = await client.get(Uri.parse(_baseUrl));
 
     if (response.statusCode == 200) {
       final user = UserModel.fromJson(json.decode(response.body));
@@ -32,7 +31,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
         throw Exception('Invalid credentials');
       }
     } else {
-      throw Exception('Failed to load user');
+      throw Exception('Failed to login');
     }
   }
 }

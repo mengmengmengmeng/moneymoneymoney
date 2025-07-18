@@ -1,101 +1,145 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moneymoneymoney/domain/entities/user.dart';
+import 'package:moneymoneymoney/injection.dart';
+import 'package:moneymoneymoney/ui/bloc/send_money/send_money_bloc.dart';
+import 'package:moneymoneymoney/ui/bloc/send_money/send_money_event.dart';
+import 'package:moneymoneymoney/ui/bloc/send_money/send_money_state.dart';
 
-class SendMoneyScreen extends StatefulWidget {
-  const SendMoneyScreen({super.key});
+class SendMoneyScreen extends StatelessWidget {
+  final User user;
 
-  @override
-  State<SendMoneyScreen> createState() => _SendMoneyScreenState();
-}
-
-class _SendMoneyScreenState extends State<SendMoneyScreen> {
-  late final TextEditingController _amountController;
-
-  @override
-  void initState() {
-    super.initState();
-    _amountController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _amountController.dispose();
-    super.dispose();
-  }
+  const SendMoneyScreen({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Send Money')),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 30.0,
-                      horizontal: 16.0,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const Text(
-                          'Amount',
-                          style: TextStyle(fontSize: 22, color: Colors.black54),
+    final amountController = TextEditingController();
+
+    return BlocProvider(
+      create: (context) => getIt<SendMoneyBloc>(),
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Send Money')),
+        body: BlocListener<SendMoneyBloc, SendMoneyState>(
+          listener: (context, state) {
+            if (state is SendMoneySuccess) {
+              _showInfoBottomSheet(
+                context,
+                title: 'Your transaction was successful',
+                buttonText: 'Submit',
+                onButtonPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+              );
+            } else if (state is SendMoneyFailure) {
+              _showInfoBottomSheet(
+                context,
+                title: 'An error occurred. Please try again.',
+                buttonText: 'Close',
+                onButtonPressed: () {
+                  Navigator.of(context).pop();
+                },
+              );
+            }
+          },
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 30.0,
+                          horizontal: 16.0,
                         ),
-                        const SizedBox(height: 8),
-                        TextField(
-                          controller: _amountController,
-                          keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true,
-                          ),
-                          decoration: const InputDecoration(
-                            prefixText: '₱ ',
-                            hintText: '0.00',
-                          ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                              RegExp(r'^\d+\.?\d{0,2}'),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const Text(
+                              'Amount',
+                              style: TextStyle(
+                                fontSize: 22,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            TextField(
+                              controller: amountController,
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                prefixText: '₱ ',
+                                hintText: '0.00',
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(r'^\d+\.?\d{0,2}'),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 20),
+                    BlocBuilder<SendMoneyBloc, SendMoneyState>(
+                      builder: (context, state) {
+                        return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                          ),
+                          onPressed: state is SendMoneyLoading
+                              ? null
+                              : () {
+                                  final amount = double.tryParse(
+                                    amountController.text,
+                                  );
+                                  if (amount == null || amount <= 0) {
+                                    _showInfoBottomSheet(
+                                      context,
+                                      title: 'Invalid Amount',
+                                      message: 'Please enter a valid amount.',
+                                      buttonText: 'OK',
+                                      onButtonPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    );
+                                  } else {
+                                    context.read<SendMoneyBloc>().add(
+                                      SendMoneyButtonPressed(amount: amount),
+                                    );
+                                  }
+                                },
+                          child: state is SendMoneyLoading
+                              ? const CircularProgressIndicator()
+                              : const Text(
+                                  'Submit',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 16.0),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  onPressed: () {
-                    _submitAmount();
-                  },
-                  child: const Text('Submit', style: TextStyle(fontSize: 18)),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  void _submitAmount() {
-    final amount = double.tryParse(_amountController.text);
-    if (amount != null && amount > 0) {
-      _showResultBottomSheet(true);
-    } else {
-      _showResultBottomSheet(false);
-    }
-  }
-
-  void _showResultBottomSheet(bool isSuccess) {
+  void _showInfoBottomSheet(
+    BuildContext context, {
+    required String title,
+    String? message,
+    required String buttonText,
+    required VoidCallback onButtonPressed,
+  }) {
     showModalBottomSheet(
       context: context,
       constraints: BoxConstraints(
@@ -109,26 +153,28 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                isSuccess
-                    ? 'Your transaction was successful'
-                    : 'An error occurred. Please try again.',
+                title,
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
+              if (message != null) ...[
+                const SizedBox(height: 8.0),
+                Text(
+                  message,
+                  style: const TextStyle(fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+              ],
               const SizedBox(height: 16.0),
+
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  if (isSuccess) {
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: const Text('Submit', style: TextStyle(fontSize: 18)),
+                onPressed: onButtonPressed,
+                child: Text(buttonText, style: const TextStyle(fontSize: 18)),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
             ],
           ),
         );
