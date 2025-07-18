@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-
-import 'login_screen.dart';
+import 'package:moneymoneymoney/injection.dart';
+import 'package:moneymoneymoney/ui/pages/login/login_screen.dart';
 
 void main() {
+  configureDependencies();
   runApp(const MyApp());
 }
 
@@ -12,10 +13,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      title: 'Money Money Money',
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: const LoginScreen(),
     );
   }

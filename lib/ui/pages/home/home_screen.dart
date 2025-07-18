@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:moneymoneymoney/login_screen.dart';
-import 'package:moneymoneymoney/send_money_screen.dart';
-import 'package:moneymoneymoney/transaction_history_screen.dart';
+import 'package:moneymoneymoney/domain/entities/user.dart';
+
+import '../login/login_screen.dart';
+import '../send_money/send_money_screen.dart';
+import '../transaction_history/transaction_history_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final User user;
+
+  const HomeScreen({super.key, required this.user});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -89,7 +93,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          _isBalanceVisible ? '₱ 500.00' : '********',
+                          _isBalanceVisible
+                              ? '₱ ${widget.user.remainingBalance.toStringAsFixed(2)}'
+                              : '********',
                           style: const TextStyle(
                             fontSize: 36,
                             fontWeight: FontWeight.bold,
@@ -145,7 +151,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const TransactionHistoryScreen(),
+                          builder: (context) =>
+                              const TransactionHistoryScreen(),
                         ),
                       );
                     },
