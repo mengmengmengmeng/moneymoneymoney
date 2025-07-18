@@ -85,3 +85,8 @@ testuser
 ```
 ### Link to mock data source
 https://github.com/mengmengmengmeng/monay/blob/main/db.json
+
+### Diagrams
+![plot](diagrams/class_diagram.png)
+![plot](diagrams/sequence_diagram.png)
+![plot](diagrams/flow_chart.png)
