@@ -87,6 +87,9 @@ testuser
 https://github.com/mengmengmengmeng/monay/blob/main/db.json
 
 ### Diagrams
+***Class Diagram***
 ![plot](diagrams/class_diagram.png)
+***Sequence Diagram***
 ![plot](diagrams/sequence_diagram.png)
+***Flow Chart***
 ![plot](diagrams/flow_chart.png)
