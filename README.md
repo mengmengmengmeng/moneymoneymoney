@@ -77,6 +77,12 @@ fvm flutter pub get
 fvm dart run build_runner build --delete-conflicting-outputs
 ```
 
+**Run the test**
+
+```
+fvm flutter test
+```
+
 ## Inside the App
 **Use this credentials in the app**
 ```
